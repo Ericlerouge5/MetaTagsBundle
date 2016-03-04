@@ -17,7 +17,7 @@ class MetaTagsExtension extends \Twig_Extension
     public function __construct(array $config = array())
     {
         // as explained in http://twig.sensiolabs.org/doc/api.html
-        $this->twig = new \Twig_Environment(new \Twig_Loader_String());
+        $this->twig = new \Twig_Environment(new \Twig_Loader_Array(array()));
 
         $this->config = $config;
     }
@@ -25,8 +25,8 @@ class MetaTagsExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'ci_metatags_parse_value' => new \Twig_Function_Method($this, 'parse_value'),
-            'ci_metatags_truncate' => new \Twig_Function_Method($this, 'truncate')
+            new \Twig_SimpleFunction('ci_metatags_parse_value', array($this, 'parse_value')),
+            new \Twig_SimpleFunction('ci_metatags_truncate', array($this, 'truncate')),
         );
     }
 

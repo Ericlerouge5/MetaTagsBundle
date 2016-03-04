@@ -6,8 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Copiaincolla\MetaTagsBundle\Entity\MetatagDefaults;
+use Copiaincolla\MetaTagsBundle\Form\MetatagDefaultsType;
+
+
 
 /**
  * MetaTagsAdminDefaults controller.
@@ -46,7 +50,7 @@ class MetaTagsAdminDefaultsController extends Controller
     {
         $entity = new MetatagDefaults();
 
-        $form = $this->createForm($this->container->get('ci_metatags.metatagdefaults_formtype'), $entity);
+        $form = $this->createForm(MetatagDefaultsType::class, $entity);
 
         return array(
             'entity' => $entity,
@@ -61,13 +65,11 @@ class MetaTagsAdminDefaultsController extends Controller
      * @Method("post")
      * @Template("CopiaincollaMetaTagsBundle:MetaTagsAdminDefaults:edit.html.twig")
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
         $entity = new MetatagDefaults();
 
-        $request = $this->getRequest();
-
-        $form = $this->createForm($this->container->get('ci_metatags.metatagdefaults_formtype'), $entity);
+        $form = $this->createForm(MetatagDefaultsType::class, $entity);
 
         $form->bind($request);
 
@@ -102,7 +104,7 @@ class MetaTagsAdminDefaultsController extends Controller
             throw $this->createNotFoundException('Unable to find MetatagDefaults entity.');
         }
 
-        $editForm = $this->createForm($this->container->get('ci_metatags.metatagdefaults_formtype'), $entity);
+        $editForm = $this->createForm(MetatagDefaultsType::class, $entity);
 
         $deleteForm = $this->createDeleteForm($id);
 
@@ -120,7 +122,7 @@ class MetaTagsAdminDefaultsController extends Controller
      * @Method("post")
      * @Template()
      */
-    public function updateAction($id)
+    public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -132,8 +134,6 @@ class MetaTagsAdminDefaultsController extends Controller
 
         $editForm = $this->createForm($this->container->get('ci_metatags.metatagdefaults_formtype'), $entity);
         $deleteForm = $this->createDeleteForm($id);
-
-        $request = $this->getRequest();
 
         $editForm->bind($request);
 
@@ -203,7 +203,7 @@ class MetaTagsAdminDefaultsController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(array('id' => $id))
-            ->add('id', 'hidden')
+            ->add('id', HiddenType::class)
             ->getForm()
             ;
     }
